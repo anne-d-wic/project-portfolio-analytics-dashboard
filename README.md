@@ -61,12 +61,13 @@ The data model follows a star schema design:
 
 ---
 
-## Key Insights (Example)
+## Key Insights
 
-- Delivery performance declined in recent months
-- Program B shows lower on-time delivery than portfolio average
-- A small number of projects concentrate most delays
-- Testing phase is the main contributor to delivery slippage
+- Delivery performance is uneven across programs, with Program C performing significantly below the portfolio average in terms of on-time delivery
+- Approximately one-third of projects drive the majority of total delay, indicating a strong concentration of delivery risk
+- Testing and Planning phases contribute disproportionately to overall delays, suggesting potential bottlenecks in execution readiness and validation processes
+- The top 10 delayed projects account for a significant share of total delay impact, highlighting clear prioritization opportunities
+- Budget performance remains relatively stable compared to delivery performance, suggesting that delays are driven more by operational challenges than financial constraints
 
 ---
 
