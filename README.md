@@ -29,22 +29,6 @@ The dashboard covers three complementary dimensions of portfolio performance:
 - High-risk project ratio: share of projects flagged as high risk
 - Top delay contributors: projects accounting for the largest share of total delay impact
 
-## Data Model
-The model follows a star schema structure.
-
-Fact tables: 
-- Projects
-- Milestones
-- Risks
-
-Dimension tables: 
-- Date
-- Program
-- Phase
-- Status
-
-This structure supports KPI consistency, scalable filtering and drill-down analysis.
-
 ## Data Preparation Workflow
 1. Generate realistic portfolio data using Python
 2. Run sanity checks across projects, milestones and risks
@@ -80,6 +64,25 @@ Analysis of delay drivers, milestone bottlenecks and the projects contributing m
 - Use targeted program reviews for underperforming areas instead of portfolio-wide generic escalation.
 - Track delivery and risk indicators together to anticipate execution slippage earlier.
 
+## Data Model
+The model follows a star schema structure.
+
+Fact tables: 
+- Projects
+- Milestones
+- Risks
+
+Dimension tables: 
+- Date
+- Program
+- Phase
+- Status
+
+This structure supports KPI consistency, scalable filtering and drill-down analysis.
+The dashboard relies on a relational model connecting projects, milestones, risks, and resources to support portfolio-level analysis.
+
+![Page 4](images/data_model.png)
+
 ## Tools Used
 - Power BI
 - DAX
@@ -99,7 +102,7 @@ Analysis of delay drivers, milestone bottlenecks and the projects contributing m
 - /dashboard -> Power BI file (.pbix)
 - /data -> CSV datasets
 - /analysis -> Python scripts
-- /images -> dashboard screenshots
+- /images -> dashboard & data model screenshots
 
 ## Tools & Technologies
 - Power BI (data visualization)
