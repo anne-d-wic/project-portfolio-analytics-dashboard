@@ -31,8 +31,18 @@ The dashboard covers three complementary dimensions of portfolio performance:
 
 ## Data Model
 The model follows a star schema structure.
-Fact tables: Projects, Milestones, Risks
-Dimension tables: Date, Program, Phase, Status
+
+Fact tables: 
+- Projects
+- Milestones
+- Risks
+
+Dimension tables: 
+- Date
+- Program
+- Phase
+- Status
+
 This structure supports KPI consistency, scalable filtering and drill-down analysis.
 
 ## Data Preparation Workflow
@@ -45,14 +55,17 @@ This structure supports KPI consistency, scalable filtering and drill-down analy
 ## Dashboard Pages
 ### Portfolio Overview
 Executive view of portfolio size, on-time delivery, budget variance and program-level performance.
+
 ![Page 1](images/portfolio_overview.png)
 
 ### Risk Analysis
 Analysis of risk concentration, high-risk projects and prioritization opportunities.
+
 ![Page 2](images/risk_analysis.png)
 
 ### Delivery Performance
 Analysis of delay drivers, milestone bottlenecks and the projects contributing most to delivery underperformance.
+
 ![Page 3](images/delivery_performance.png)
 
 ## Key Insights
