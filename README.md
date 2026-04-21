@@ -1,5 +1,10 @@
-# project-portfolio-analytics-dashboard
-Power BI dashboard analyzing project portfolio performance, delivery efficiency, and risk exposure with a business-oriented approach.
+# Project Portfolio Analytics Dashboard
+
+## Business Context
+This project was designed as a portfolio management decision-support dashboard for a PMO or transformation office overseeing multiple programs and projects.
+
+The objective is not only to track project status, but to identify where delivery risk is concentrated, which programs require escalation and which project phases contribute most to delays.
+
 
 ## Overview
 
