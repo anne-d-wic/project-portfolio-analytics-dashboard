@@ -61,22 +61,22 @@ This structure supports KPI consistency, scalable filtering and drill-down analy
 5. Design KPI-driven dashboard pages for executive and operational analysis
 
 ## Dashboard Pages
-### Portfolio Overview
+  ### Portfolio Overview
 Executive view of portfolio size, on-time delivery, budget variance and program-level performance.
 
 ![Page 1](images/portfolio_overview.png)
 
-### Risk Analysis
+  ### Risk Analysis
 Analysis of risk concentration, high-risk projects and prioritization opportunities.
 
 ![Page 2](images/risk_analysis.png)
 
-### Delivery Performance
+  ### Delivery Performance
 Analysis of delay drivers, milestone bottlenecks and the projects contributing most to delivery underperformance.
 
 ![Page 3](images/delivery_performance.png)
 
-### Data Model
+  ### Data Model
 The dashboard relies on a relational model connecting projects, milestones, risks, and resources to support portfolio-level analysis.
 
 ![Page 4](images/data_model.png)
