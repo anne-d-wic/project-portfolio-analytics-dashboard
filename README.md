@@ -10,6 +10,10 @@ Build a Power BI dashboard that helps decision-makers answer three critical ques
 2. Where is risk concentrated across the portfolio?
 3. Which projects and milestone phases should be prioritized for corrective action?
 
+## What Makes This Useful for Decision-Makers
+This dashboard is designed to support portfolio-level decision-making, not just project tracking. It helps PMO analysts, portfolio managers and program leaders quickly identify where delivery risk is concentrated, which programs require escalation, and which projects or milestone phases should be prioritized for corrective action.
+By combining delivery, budget and risk indicators in one model, the dashboard makes it easier to move from reporting to action.
+
 ## Target Audience
 - PMO analysts
 - Portfolio managers
@@ -103,6 +107,23 @@ The dashboard relies on a relational model connecting projects, milestones, risk
 - Business-oriented data storytelling
 - Python-based data preparation
 - Risk and delivery performance analysis
+
+## Reproducibility
+The project can be reproduced from the Python scripts and CSV outputs included in this repository.
+### Steps
+1. Run `1_generate_portfolio_data.py` to generate the base portfolio datasets.
+2. Run `2_sanity_checks.py` to validate data consistency across projects, milestones and risks.
+3. Run `3_enrich_data.py` to create reporting-ready datasets for the dashboard.
+4. Open the Power BI file and connect it to the generated files in the `data/` folder.
+### Output Files
+The workflow produces and updates CSV files in the `data/` folder, including project, milestone, risk and resource datasets used in the final model.
+### Notes
+The data used in this project is simulated for demonstration purposes. The goal is to showcase analytical reasoning, KPI design, data preparation and dashboard storytelling in a realistic PMO reporting scenario.
+### Requirements
+- Python 3.x
+- pandas
+- Power BI Desktop
+- Access to the files stored in the `data/` folder
 
 ## Project Structure
 - /dashboard -> Power BI file (.pbix)
