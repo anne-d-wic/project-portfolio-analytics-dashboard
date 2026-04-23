@@ -43,6 +43,7 @@ The dashboard relies on a relational model connecting projects, milestones, risk
 ## Data Preparation Workflow
 
 <details><summary>See More</summary>
+  
 1. Generate realistic portfolio data using Python
 2. Run sanity checks across projects, milestones and risks
 3. Enrich the datasets for reporting use cases
