@@ -3,27 +3,16 @@
 Power BI portfolio dashboard built with Python, Pandas, and DAX to analyze delivery performance, risk concentration, and corrective-action priorities across a simulated PMO portfolio.
 
 ## What This Project Demonstrates
-This project shows how portfolio data can be generated, validated, enriched, modeled, and translated into a decision-support dashboard.
+This project simulates a PMO reporting environment and turns portfolio data into a decision-support dashboard built with Power BI and Python.
 
-It highlights:
-- KPI design for portfolio monitoring
-- Python-based data preparation and enrichment
-- star schema modeling in Power BI
-- cross-page analysis for executive reporting
+It is designed to help answer three practical questions:
 
-Business Questions Answered:
 - Which programs are underperforming on delivery?
 - Where is risk concentrated across the portfolio?
-- Which projects should be prioritized for corrective action?
+- Which projects or milestone phases should be prioritized for corrective action?
 
 ## Why This Project Matters
-This dashboard is designed to support portfolio-level decision-making, not just project tracking.
-
-It helps PMO analysts, portfolio managers, and program leaders:
-- identify where delivery risk is concentrated
-- isolate the main drivers of slippage
-- compare execution performance across the portfolio
-- prioritize corrective action more effectively
+This dashboard is designed to support portfolio-level decision-making, not just project tracking. It helps PMO analysts, portfolio managers, and program leaders identify where delivery risk is concentrated, compare execution performance across the portfolio, and focus corrective action on the areas generating the highest operational pressure.
 
 ## Dashboard Pages
 | Page | Purpose |
@@ -102,30 +91,15 @@ A portfolio manager may start on Portfolio Overview to isolate projects marked a
 ## Business Context and Objective
 <details><summary><strong>See more</strong></summary>
   
-This project was designed as a portfolio management decision-support dashboard for a PMO or transformation office overseeing multiple programs and projects.
-The objective is not only to track project status, but to identify where delivery risk is concentrated, which programs require escalation and which project phases contribute most to delays.
+This project was designed as a portfolio management dashboard for a PMO or transformation office overseeing multiple programs and projects.
 
-### Objective
-Build a Power BI dashboard that helps decision-makers answer three critical questions:
-1. Which programs are underperforming on delivery?
-2. Where is risk concentrated across the portfolio?
-3. Which projects and milestone phases should be prioritized for corrective action?
-
-### What Makes This Useful for Decision-Makers
-This dashboard is designed to support portfolio-level decision-making, not just project tracking. It helps PMO analysts, portfolio managers and program leaders quickly identify where delivery risk is concentrated, which programs require escalation, and which projects or milestone phases should be prioritized for corrective action.
-By combining delivery, budget and risk indicators in one model, the dashboard makes it easier to move from reporting to action.
+The objective is to support portfolio monitoring through three complementary lenses: delivery performance, risk exposure, and delay impact.
 
 ### Target Audience
 - PMO analysts
 - Portfolio managers
 - Program directors
 - Transformation leaders
-
-### Analytical Scope
-The dashboard covers three complementary dimensions of portfolio performance:
-- Delivery performance
-- Risk exposure
-- Budget and delay impact
 </details>
 
 ## Key KPIs
@@ -173,19 +147,23 @@ This project relies on a set of business assumptions designed to simulate a real
 The objective is not to replicate a specific company's methodology, but to demonstrate how analytical rules can be structured to support portfolio-level monitoring, prioritization and escalation.
 </details>
 
+## Example Analytical Rule
+<details><summary><strong>See more</strong></summary>
+
+High-risk projects are flagged using a derived risk score calculated as Impact x Probability at the risk level. Projects associated with high-scoring risks can then be aggregated and compared against delivery indicators to identify where execution issues and risk exposure overlap.
+</details>
+
 ## Key Insights
 <details><summary><strong>See more</strong></summary>
 
-The dashboard is designed to support a portfolio-level reading of delivery performance rather than a purely descriptive project review. The main value of the analysis comes from identifying where execution pressure, delay concentration, and risk exposure intersect.
+The analysis highlights where execution pressure, delay concentration, and risk exposure intersect across the portfolio.
 
-The report is intended to help surface insights such as:
+It helps surface insights such as:
 
-- which parts of the portfolio concentrate the highest proportion of projects under pressure
-- whether delivery slippage appears isolated or systemic across programs
-- which at-risk projects combine weak delivery performance with elevated risk exposure
-- where portfolio managers may need to prioritize escalation or corrective action
-
-Taken together, these insights help shift the dashboard from status reporting to management support. Instead of only showing that some projects are delayed or risky, the report helps explain where attention should be focused and why those areas matter at portfolio level.
+- which parts of the portfolio concentrate the highest proportion of projects under pressure,
+- whether delivery slippage appears isolated or systemic across programs,
+- which at-risk projects combine weak delivery performance with elevated risk exposure,
+- where portfolio managers may need to prioritize escalation or corrective action.
 </details>
 
 ## Recommendations
@@ -220,11 +198,14 @@ The data used in this project is simulated for demonstration purposes. The goal 
 
 ## Project Structure
 <details><summary><strong>See more</strong></summary>
-  
-- /dashboard -> Power BI file (.pbix)
-- /data -> CSV datasets
-- /analysis -> Python scripts
-- /images -> dashboard & data model screenshots
+
+- `analysis/1_generate_portfolio_data.py` -> generates the base portfolio datasets
+- `analysis/2_sanity_checks.py` -> validates consistency across projects, milestones, risks, and resources
+- `analysis/3_enrich_data.py` -> enriches the datasets with reporting-oriented fields
+- `dashboard/project-portfolio-analytics-dashboard.pbix` -> Power BI dashboard file
+- `data/` -> generated CSV datasets used in the reporting workflow
+- `images/data_model.png` -> data model visual
+- `images/`delivery_performance.png`, portfolio_overview.png`, `risk_analysis.png` -> dashboard screenshots
 </details>
 
 ## Notes
