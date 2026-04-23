@@ -130,6 +130,8 @@ Taken together, these pages support a progression from monitoring to diagnosis:
 Because the report is designed around shared filters and a consistent analytical scope, users can move between these pages without losing the context of their analysis.
 
 ## Key Insights
+<details><summary>See More</summary>
+  
 The dashboard is designed to support a portfolio-level reading of delivery performance rather than a purely descriptive project review. The main value of the analysis comes from identifying where execution pressure, delay concentration, and risk exposure intersect.
 
 The report is intended to help surface insights such as:
@@ -140,6 +142,7 @@ The report is intended to help surface insights such as:
 - where portfolio managers may need to prioritize escalation or corrective action
 
 Taken together, these insights help shift the dashboard from status reporting to management support. Instead of only showing that some projects are delayed or risky, the report helps explain where attention should be focused and why those areas matter at portfolio level.
+</details>
 
 ## Recommendations
 - Prioritize corrective action on the top delayed projects rather than spreading attention evenly across the portfolio.
