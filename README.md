@@ -205,7 +205,7 @@ The data used in this project is simulated for demonstration purposes. The goal 
 - `dashboard/project-portfolio-analytics-dashboard.pbix` -> Power BI dashboard file
 - `data/` -> generated CSV datasets used in the reporting workflow
 - `images/data_model.png` -> data model visual
-- `images/`delivery_performance.png`, portfolio_overview.png`, `risk_analysis.png` -> dashboard screenshots
+- `images/delivery_performance.png`, portfolio_overview.png`, `risk_analysis.png` -> dashboard screenshots
 </details>
 
 ## Notes
