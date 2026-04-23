@@ -41,11 +41,14 @@ The dashboard relies on a relational model connecting projects, milestones, risk
 ![Page 4](images/data_model.png)
 
 ## Data Preparation Workflow
+
+<details><summary>See More</summary>
 1. Generate realistic portfolio data using Python
 2. Run sanity checks across projects, milestones and risks
 3. Enrich the datasets for reporting use cases
 4. Build the data model in Power BI
 5. Design KPI-driven dashboard pages for executive and operational analysis
+</details>
 
 ## Dashboard Navigation and Cross-Page Analysis
 The report is designed as a connected analytical workflow rather than a set of isolated pages. Each page addresses a different portfolio management question, while shared filters preserve the same analytical scope across the dashboard.
