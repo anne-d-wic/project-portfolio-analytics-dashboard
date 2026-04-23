@@ -34,11 +34,14 @@ The dashboard covers three complementary dimensions of portfolio performance:
 - Top delay contributors: projects accounting for the largest share of total delay impact
 
 ## Data Model
+<details><summary><strong>See more</strong></summary>
+  
 The model follows a star schema structure (fact & dimension tables), supporting KPI consistency, scalable filtering and drill-down analysis.
 
 The dashboard relies on a relational model connecting projects, milestones, risks, and resources to support portfolio-level analysis.
 
 ![Page 4](images/data_model.png)
+</details>
 
 ## Data Preparation Workflow
 <details><summary><strong>See more</strong></summary>
@@ -51,6 +54,8 @@ The dashboard relies on a relational model connecting projects, milestones, risk
 </details>
 
 ## Dashboard Navigation and Cross-Page Analysis
+<details><summary><strong>See more</strong></summary>
+
 The report is designed as a connected analytical workflow rather than a set of isolated pages. Each page addresses a different portfolio management question, while shared filters preserve the same analytical scope across the dashboard.
 Users can begin with a high-level portfolio view, move to delivery execution analysis, and then examine risk concentration without losing context. This makes the report easier to use for investigation, comparison, and decision-making.
 
@@ -94,6 +99,7 @@ This README focuses on report behavior rather than click-by-click interaction. I
 - the logical relationship between pages
 - the role of shared filters
 - the continuity of analysis across navigation
+</details>
 
 ## Dashboard Pages
 The dashboard is organized into three complementary report pages, each designed to answer a distinct portfolio management question while remaining part of the same analytical flow.
@@ -120,6 +126,8 @@ It supports a more focused diagnostic view once delivery issues or at-risk proje
 ![Page 2](images/risk_analysis.png)
 
 ### How These Pages Work Together
+<details><summary><strong>See more</strong></summary>
+
 Taken together, these pages support a progression from monitoring to diagnosis:
 
 - Portfolio Overview shows where attention is needed
@@ -127,6 +135,7 @@ Taken together, these pages support a progression from monitoring to diagnosis:
 - Risk Analysis helps clarify the exposure behind underperforming areas of the portfolio
 
 Because the report is designed around shared filters and a consistent analytical scope, users can move between these pages without losing the context of their analysis.
+</details>
 
 ## Key Insights
 <details><summary><strong>See more</strong></summary>
