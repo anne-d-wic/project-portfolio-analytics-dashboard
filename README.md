@@ -34,24 +34,11 @@ The dashboard covers three complementary dimensions of portfolio performance:
 - Top delay contributors: projects accounting for the largest share of total delay impact
 
 ## Data Model
-The model follows a star schema structure.
+The model follows a star schema structure (fact & dimension tables), supporting KPI consistency, scalable filtering and drill-down analysis.
 
-Fact tables: 
-- Projects
-- Milestones
-- Risks
+The dashboard relies on a relational model connecting projects, milestones, risks, and resources to support portfolio-level analysis.
 
-Dimension tables: 
-- Date
-- Program
-- Sponsor
-- Resources
-- Priority
-- Status
-- Phase
-- Risk Level
-
-This structure supports KPI consistency, scalable filtering and drill-down analysis.
+![Page 4](images/data_model.png)
 
 ## Data Preparation Workflow
 1. Generate realistic portfolio data using Python
@@ -60,32 +47,95 @@ This structure supports KPI consistency, scalable filtering and drill-down analy
 4. Build the data model in Power BI
 5. Design KPI-driven dashboard pages for executive and operational analysis
 
+## Dashboard Navigation and Cross-Page Analysis
+The report is designed as a connected analytical workflow rather than a set of isolated pages. Each page addresses a different portfolio management question, while shared filters preserve the same analytical scope across the dashboard.
+Users can begin with a high-level portfolio view, move to delivery execution analysis, and then examine risk concentration without losing context. This makes the report easier to use for investigation, comparison, and decision-making.
+
+### How the Pages Connect
+- Portfolio Overview provides the overall picture of portfolio health, project status, and concentration of issues
+- Delivery Performance focuses on execution trends, schedule slippage, and delivery performance across projects or programs
+- Risk Analysis highlights risk exposure, severity, and the main sources of delivery pressure
+
+Together, these pages support a progression from summary to diagnosis:
+
+- Portfolio Overview identifies where attention is needed
+- Delivery Performance explains where execution is deteriorating
+- Risk Analysis helps clarify the underlying exposure behind underperforming projects
+
+### Shared Filters Across Pages
+The dashboard uses shared slicers to maintain a consistent decision perimeter across pages.
+
+Common filters may include:
+
+- reporting period
+- project status
+- program or portfolio segment
+- business area
+- risk level
+
+When a user applies a filter on one page, that context is preserved while navigating to the others. As a result:
+
+- visuals remain aligned on the same subset of projects
+- KPI comparisons stay consistent across report pages
+- users can move from summary to detail without resetting their analysis
+
+Page-level filters may still be used for more focused exploration, but the global filter context remains the main analytical backbone of the report.
+
+### Example Analytical Flow
+A portfolio manager may start on Portfolio Overview to isolate projects marked as At Risk. From there, they can move to Delivery Performance to determine whether delays are concentrated in specific programs or milestone phases. They can then open Risk Analysis to assess whether those same projects also carry elevated risk exposure. Because the filter context is preserved across pages, the analysis remains coherent from overview to root-cause investigation.
+
+### Documentation Approach
+This README focuses on report behavior rather than click-by-click interaction. Instead of relying on a demo GIF, it explains:
+
+- the purpose of each page
+- the logical relationship between pages
+- the role of shared filters
+- the continuity of analysis across navigation
+
 ## Dashboard Pages
+The dashboard is organized into three complementary report pages, each designed to answer a distinct portfolio management question while remaining part of the same analytical flow.
+
   ### Portfolio Overview
-Executive view of portfolio size, on-time delivery, budget variance and program-level performance.
+This page provides the high-level summary of portfolio health. It is designed to help users quickly understand the overall distribution of project status, identify where performance pressure is concentrated, and detect which parts of the portfolio require closer review.
+
+It acts as the main entry point for analysis and supports rapid prioritization at portfolio level.
 
 ![Page 1](images/portfolio_overview.png)
 
-  ### Risk Analysis
-Analysis of risk concentration, high-risk projects and prioritization opportunities.
-
-![Page 2](images/risk_analysis.png)
-
   ### Delivery Performance
-Analysis of delay drivers, milestone bottlenecks and the projects contributing most to delivery underperformance.
+This page focuses on execution quality and schedule performance. It helps users assess whether delivery slippage is isolated or systemic, compare performance across projects or programs, and identify where corrective action may be needed to stabilize execution.
+
+It is particularly useful for understanding how delivery issues evolve once a problematic subset of the portfolio has been isolated.
 
 ![Page 3](images/delivery_performance.png)
 
-  ### Data Model
-The dashboard relies on a relational model connecting projects, milestones, risks, and resources to support portfolio-level analysis.
+  ### Risk Analysis
+This page concentrates on project risk exposure and severity. It helps users identify which projects carry the greatest risk burden, evaluate how risk is distributed across the portfolio, and connect operational underperformance with underlying exposure factors.
 
-![Page 4](images/data_model.png)
+It supports a more focused diagnostic view once delivery issues or at-risk projects have been identified.
+
+![Page 2](images/risk_analysis.png)
+
+### How These Pages Work Together
+Taken together, these pages support a progression from monitoring to diagnosis:
+
+- Portfolio Overview shows where attention is needed
+- Delivery Performance explains where execution is weakening
+- Risk Analysis helps clarify the exposure behind underperforming areas of the portfolio
+
+Because the report is designed around shared filters and a consistent analytical scope, users can move between these pages without losing the context of their analysis.
 
 ## Key Insights
-- Delivery performance is uneven across programs, with Program C performing below the portfolio average.
-- A limited share of projects drives most of the total delay impact, suggesting strong prioritization opportunities.
-- Planning and Testing phases contribute disproportionately to delays, indicating likely process bottlenecks.
-- Budget performance is more stable than delivery performance, suggesting that delays are driven more by operational execution than by financial overrun.
+The dashboard is designed to support a portfolio-level reading of delivery performance rather than a purely descriptive project review. The main value of the analysis comes from identifying where execution pressure, delay concentration, and risk exposure intersect.
+
+The report is intended to help surface insights such as:
+
+- which parts of the portfolio concentrate the highest proportion of projects under pressure
+- whether delivery slippage appears isolated or systemic across programs
+- which at-risk projects combine weak delivery performance with elevated risk exposure
+- where portfolio managers may need to prioritize escalation or corrective action
+
+Taken together, these insights help shift the dashboard from status reporting to management support. Instead of only showing that some projects are delayed or risky, the report helps explain where attention should be focused and why those areas matter at portfolio level.
 
 ## Recommendations
 - Prioritize corrective action on the top delayed projects rather than spreading attention evenly across the portfolio.
@@ -111,10 +161,10 @@ The dashboard relies on a relational model connecting projects, milestones, risk
 ## Reproducibility
 The project can be reproduced from the Python scripts and CSV outputs included in this repository.
 ### Steps
-1. Run `1_generate_portfolio_data.py` to generate the base portfolio datasets.
-2. Run `2_sanity_checks.py` to validate data consistency across projects, milestones and risks.
-3. Run `3_enrich_data.py` to create reporting-ready datasets for the dashboard.
-4. Open the Power BI file and connect it to the generated files in the `data/` folder.
+1. Run `1_generate_portfolio_data.py` to generate the base portfolio datasets
+2. Run `2_sanity_checks.py` to validate data consistency across projects, milestones and risks
+3. Run `3_enrich_data.py` to create reporting-ready datasets for the dashboard
+4. Open the Power BI file and connect it to the generated files in the `data/` folder
 ### Output Files
 The workflow produces and updates CSV files in the `data/` folder, including project, milestone, risk and resource datasets used in the final model.
 ### Notes
