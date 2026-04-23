@@ -41,8 +41,7 @@ The dashboard relies on a relational model connecting projects, milestones, risk
 ![Page 4](images/data_model.png)
 
 ## Data Preparation Workflow
-
-<details><summary>See More</summary>
+<details><summary><strong>See more</strong></summary>
   
 1. Generate realistic portfolio data using Python
 2. Run sanity checks across projects, milestones and risks
@@ -130,7 +129,7 @@ Taken together, these pages support a progression from monitoring to diagnosis:
 Because the report is designed around shared filters and a consistent analytical scope, users can move between these pages without losing the context of their analysis.
 
 ## Key Insights
-<details><summary>See More</summary>
+<details><summary><strong>See more</strong></summary>
   
 The dashboard is designed to support a portfolio-level reading of delivery performance rather than a purely descriptive project review. The main value of the analysis comes from identifying where execution pressure, delay concentration, and risk exposure intersect.
 
@@ -145,19 +144,24 @@ Taken together, these insights help shift the dashboard from status reporting to
 </details>
 
 ## Recommendations
+<details><summary><strong>See more</strong></summary>
+  
 - Prioritize corrective action on the top delayed projects rather than spreading attention evenly across the portfolio.
 - Review milestone governance in Planning and Testing phases to reduce repeated execution bottlenecks.
 - Use targeted program reviews for underperforming areas instead of portfolio-wide generic escalation.
 - Track delivery and risk indicators together to anticipate execution slippage earlier.
+</details>
 
-## Tools Used
+## Tools & Skills
+### Tools Used
+
 - Power BI
 - DAX
 - Python
 - Pandas
 - GitHub
 
-## Skills Demonstrated
+### Skills Demonstrated
 - KPI design for portfolio management
 - Power BI dashboard development
 - Star schema modeling
@@ -166,6 +170,8 @@ Taken together, these insights help shift the dashboard from status reporting to
 - Risk and delivery performance analysis
 
 ## Reproducibility
+<details><summary><strong>See more</strong></summary>
+  
 The project can be reproduced from the Python scripts and CSV outputs included in this repository.
 ### Steps
 1. Run `1_generate_portfolio_data.py` to generate the base portfolio datasets
@@ -181,6 +187,7 @@ The data used in this project is simulated for demonstration purposes. The goal 
 - pandas
 - Power BI Desktop
 - Access to the files stored in the `data/` folder
+</details>
 
 ## Project Structure
 - /dashboard -> Power BI file (.pbix)
