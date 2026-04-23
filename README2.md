@@ -33,7 +33,7 @@ It helps PMO analysts, portfolio managers, and program leaders:
 ## Screenshots
 
 ### Portfolio Overview
-![Portfolio Overview](portfolio_overview.png)
+![Portfolio Overview](/images/portfolio_overview.png)
 
 ### Delivery Performance
 ![Delivery Performance](delivery_performance.png)
@@ -42,7 +42,7 @@ It helps PMO analysts, portfolio managers, and program leaders:
 ![Risk Analysis](risk_analysis.png)
 
 <details>
-<summary><strong>Dashboard Navigation and Cross-Page Analysis</strong></summary>
+<summary><strong>## Dashboard Navigation and Cross-Page Analysis</strong></summary>
 
 The report is designed as a connected analytical workflow rather than a set of isolated pages. Each page addresses a different portfolio management question, while shared filters preserve the same analytical scope across the dashboard.
 
