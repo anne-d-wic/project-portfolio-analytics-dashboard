@@ -156,7 +156,19 @@ The dashboard relies on a relational model connecting projects, milestones, risk
 3. Enrich the datasets for reporting use cases
 4. Build the data model in Power BI
 5. Design KPI-driven dashboard pages for executive and operational analysis
+
+### How the Data Is Rebuilt
+The reporting datasets used in this dashboard are rebuilt through a three-step Python workflow. The first script generates a realistic portfolio dataset, the second script validates consistency rules across the generated files, and the third script enriches the datasets with reporting-oriented fields used in the Power BI model.
+This approach makes the project reproducible and shows how raw simulated data can be turned into structured, analysis-ready inputs for portfolio reporting.
+
+### Transformation Logic
+Python is used to move the project from raw simulated records to analysis-ready reporting tables. This includes generating base entities, checking consistency across projects, milestones and risks, and enriching the data with fields that support KPI calculation, filtering and business interpretation in Power BI.
+The transformation flow can be summarized as follows: simulated source data -> sanity checks -> enriched reporting tables -> Power BI model -> dashboard analysis.
 </details>
+
+## Business Assumptions
+This project relies on a set of business assumptions designed to simulate a realistic PMO reporting environment. These assumptions include project status classification, milestone delay logic, budget variance calculation, and risk scoring rules used to flag high-risk projects.
+The objective is not to replicate a specific company's methodology, but to demonstrate how analytical rules can be structured to support portfolio-level monitoring, prioritization and escalation.
 
 ## Key Insights  
 The dashboard is designed to support a portfolio-level reading of delivery performance rather than a purely descriptive project review. The main value of the analysis comes from identifying where execution pressure, delay concentration, and risk exposure intersect.
