@@ -78,6 +78,7 @@ A portfolio manager may start on Portfolio Overview to isolate projects marked a
 
 ## Dashboard Pages
 The dashboard is organized into three complementary report pages, each designed to answer a distinct portfolio management question while remaining part of the same analytical flow.
+<details><summary><strong>See more</strong></summary>
 
   ### Portfolio Overview
 This page provides the high-level summary of portfolio health. It is designed to help users quickly understand the overall distribution of project status, identify where performance pressure is concentrated, and detect which parts of the portfolio require closer review.
@@ -101,8 +102,6 @@ It supports a more focused diagnostic view once delivery issues or at-risk proje
 ![Page 2](images/risk_analysis.png)
 
 ### How These Pages Work Together
-<details><summary><strong>See more</strong></summary>
-
 Taken together, these pages support a progression from monitoring to diagnosis:
 
 - Portfolio Overview shows where attention is needed
@@ -112,31 +111,34 @@ Taken together, these pages support a progression from monitoring to diagnosis:
 Because the report is designed around shared filters and a consistent analytical scope, users can move between these pages without losing the context of their analysis.
 </details>
 
-## Business Context
+## Business Context and Objective
+<details><summary><strong>See more</strong></summary>
+
 This project was designed as a portfolio management decision-support dashboard for a PMO or transformation office overseeing multiple programs and projects.
 The objective is not only to track project status, but to identify where delivery risk is concentrated, which programs require escalation and which project phases contribute most to delays.
 
-## Objective
+### Objective
 Build a Power BI dashboard that helps decision-makers answer three critical questions:
 1. Which programs are underperforming on delivery?
 2. Where is risk concentrated across the portfolio?
 3. Which projects and milestone phases should be prioritized for corrective action?
 
-## What Makes This Useful for Decision-Makers
+### What Makes This Useful for Decision-Makers
 This dashboard is designed to support portfolio-level decision-making, not just project tracking. It helps PMO analysts, portfolio managers and program leaders quickly identify where delivery risk is concentrated, which programs require escalation, and which projects or milestone phases should be prioritized for corrective action.
 By combining delivery, budget and risk indicators in one model, the dashboard makes it easier to move from reporting to action.
 
-## Target Audience
+### Target Audience
 - PMO analysts
 - Portfolio managers
 - Program directors
 - Transformation leaders
 
-## Analytical Scope
+### Analytical Scope
 The dashboard covers three complementary dimensions of portfolio performance:
 - Delivery performance
 - Risk exposure
 - Budget and delay impact
+</details>
 
 ## Key KPIs
 <details><summary><strong>See more</strong></summary>
@@ -168,8 +170,6 @@ The dashboard relies on a relational model connecting projects, milestones, risk
 5. Design KPI-driven dashboard pages for executive and operational analysis
 </details>
 
-
-
 ## Key Insights
 <details><summary><strong>See more</strong></summary>
   
@@ -196,12 +196,11 @@ Taken together, these insights help shift the dashboard from status reporting to
 
 ## Tools & Skills
 ### Tools Used
-
-- Power BI
-- DAX
-- Python
-- Pandas
-- GitHub
+- Power BI (data visualization)
+- DAX (measures)
+- Python (data generation & preprocessing)
+- Pandas (data transformation)
+- GitHub (versioning & portfolio)
 
 ### Skills Demonstrated
 - KPI design for portfolio management
@@ -232,16 +231,18 @@ The data used in this project is simulated for demonstration purposes. The goal 
 </details>
 
 ## Project Structure
+<details><summary><strong>See more</strong></summary>
+  
 - /dashboard -> Power BI file (.pbix)
 - /data -> CSV datasets
 - /analysis -> Python scripts
 - /images -> dashboard & data model screenshots
-
-## Tools & Technologies
-- Power BI (data visualization)
-- Python (data generation & preprocessing)
-- Pandas (data transformation)
-- GitHub (versioning & portfolio)
+</details>
 
 ## Notes
-This project uses simulated data for demonstration purposes. The emphasis is on analytical reasoning, dashboard design and business interpretation.
+<details><summary><strong>See more</strong></summary>
+  
+The data used in this project is simulated for demonstration purposes.
+
+The emphasis is on analytical reasoning, KPI design, transformation logic, dashboard structure, and business-oriented interpretation in a realistic PMO reporting scenario.
+</details>
