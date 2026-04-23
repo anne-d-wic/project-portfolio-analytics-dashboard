@@ -37,10 +37,9 @@ It helps PMO analysts, portfolio managers, and program leaders:
 ![Risk Analysis](/images/risk_analysis.png)
 
 ## Dashboard Navigation and Cross-Page Analysis
-<details><summary><strong>See more</strong></summary>
-
 The report is designed as a connected analytical workflow rather than a set of isolated pages. Each page addresses a different portfolio management question, while shared filters preserve the same analytical scope across the dashboard.
 Users can begin with a high-level portfolio view, move to delivery execution analysis, and then examine risk concentration without losing context.
+<details><summary><strong>See more</strong></summary>
 
 ### How the Pages Connect
 - Portfolio Overview provides the overall picture of portfolio health, project status, and concentration of issues
@@ -112,10 +111,9 @@ Because the report is designed around shared filters and a consistent analytical
 </details>
 
 ## Business Context and Objective
-<details><summary><strong>See more</strong></summary>
-
 This project was designed as a portfolio management decision-support dashboard for a PMO or transformation office overseeing multiple programs and projects.
 The objective is not only to track project status, but to identify where delivery risk is concentrated, which programs require escalation and which project phases contribute most to delays.
+<details><summary><strong>See more</strong></summary>
 
 ### Objective
 Build a Power BI dashboard that helps decision-makers answer three critical questions:
@@ -151,9 +149,8 @@ The dashboard covers three complementary dimensions of portfolio performance:
   </details>
 
 ## Data Model
-<details><summary><strong>See more</strong></summary>
-  
 The model follows a star schema structure (fact & dimension tables), supporting KPI consistency, scalable filtering and drill-down analysis.
+<details><summary><strong>See more</strong></summary>
 
 The dashboard relies on a relational model connecting projects, milestones, risks, and resources to support portfolio-level analysis.
 
@@ -170,10 +167,9 @@ The dashboard relies on a relational model connecting projects, milestones, risk
 5. Design KPI-driven dashboard pages for executive and operational analysis
 </details>
 
-## Key Insights
-<details><summary><strong>See more</strong></summary>
-  
+## Key Insights  
 The dashboard is designed to support a portfolio-level reading of delivery performance rather than a purely descriptive project review. The main value of the analysis comes from identifying where execution pressure, delay concentration, and risk exposure intersect.
+<details><summary><strong>See more</strong></summary>
 
 The report is intended to help surface insights such as:
 
@@ -210,10 +206,10 @@ Taken together, these insights help shift the dashboard from status reporting to
 - Python-based data preparation
 - Risk and delivery performance analysis
 
-## Reproducibility
+## Reproducibility 
+The project can be reproduced from the Python scripts and CSV outputs included in this repository.
 <details><summary><strong>See more</strong></summary>
   
-The project can be reproduced from the Python scripts and CSV outputs included in this repository.
 ### Steps
 1. Run `1_generate_portfolio_data.py` to generate the base portfolio datasets
 2. Run `2_sanity_checks.py` to validate data consistency across projects, milestones and risks
