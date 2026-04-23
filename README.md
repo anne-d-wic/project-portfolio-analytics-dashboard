@@ -81,24 +81,15 @@ The dashboard is organized into three complementary report pages, each designed 
 
   ### Portfolio Overview
 This page provides the high-level summary of portfolio health. It is designed to help users quickly understand the overall distribution of project status, identify where performance pressure is concentrated, and detect which parts of the portfolio require closer review.
-
 It acts as the main entry point for analysis and supports rapid prioritization at portfolio level.
-
-![Page 1](images/portfolio_overview.png)
 
   ### Delivery Performance
 This page focuses on execution quality and schedule performance. It helps users assess whether delivery slippage is isolated or systemic, compare performance across projects or programs, and identify where corrective action may be needed to stabilize execution.
-
 It is particularly useful for understanding how delivery issues evolve once a problematic subset of the portfolio has been isolated.
-
-![Page 3](images/delivery_performance.png)
 
   ### Risk Analysis
 This page concentrates on project risk exposure and severity. It helps users identify which projects carry the greatest risk burden, evaluate how risk is distributed across the portfolio, and connect operational underperformance with underlying exposure factors.
-
 It supports a more focused diagnostic view once delivery issues or at-risk projects have been identified.
-
-![Page 2](images/risk_analysis.png)
 
 ### How These Pages Work Together
 Taken together, these pages support a progression from monitoring to diagnosis:
