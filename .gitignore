@@ -1,0 +1,21 @@
+# python
+.venv/
+__pycache__/
+
+# dbt
+target/
+logs/
+.user.yml
+
+# DuckDB
+*.duckdb
+
+# Others
+archives/
+notes/
+review_notes/
+tmp_create_tracker.py
+
+# Notes de travail internes et scripts hors-projet
+CONTEXTE_project-portfolio-analytics.md
+generate_linkedin_post*.py

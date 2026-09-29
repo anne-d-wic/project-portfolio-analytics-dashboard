@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: int_projects
+    columns:
+      - name: project_id
+        tests:
+          - unique
+          - not_null
+  - name: int_milestones
+    columns:
+      - name: project_id
+        tests:
+          - unique
+          - not_null
+  - name: int_milestones_detail
+    columns:
+      - name: milestone_id
+        tests:
+          - unique
+          - not_null
+  - name: int_risks
+    columns:
+      - name: project_id
+        tests:
+          - unique
+          - not_null
+  - name: int_risks_detail
+    columns:
+      - name: risk_id
+        tests:
+          - unique
+          - not_null
+
+  - name: int_resources
+    columns:
+      - name: project_id
+        tests:
+          - unique
+          - not_null

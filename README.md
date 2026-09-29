@@ -1,217 +1,280 @@
 # Project Portfolio Analytics Dashboard
 
-Power BI portfolio dashboard built with Python, Pandas, and DAX to analyze delivery performance, risk concentration, and corrective-action priorities across a simulated PMO portfolio.
+End-to-end analytics project that turns raw project-portfolio data into a decision-ready Power BI dashboard, built on a modern **ELT pipeline** with **dbt**, **DuckDB**, layered data modeling, data quality tests, and lightweight orchestration.
+
+> **This is v2 of the project.** The original version (a Power BI dashboard powered by a Python/Pandas preprocessing workflow) is preserved on the [`v1-powerbi-pandas`](../../tree/v1-powerbi-pandas) branch and as [release `v1.0`](../../releases/tag/v1.0). See [Project Evolution](#project-evolution-v1--v2) below.
+
+---
+
+## Project Evolution (v1 → v2)
+
+This project was intentionally rebuilt to demonstrate the move from a simple reporting workflow to a proper analytics-engineering pipeline.
+
+| | v1 (initial version) | v2 (current version) |
+|---|---|---|
+| Data preparation | Python + Pandas scripts writing enriched CSVs | **ELT pipeline with dbt** (SQL, layered models) |
+| Storage | Flat CSV files | **DuckDB** analytical database |
+| Transformations | Ad-hoc pandas enrichment | **Layered models**: staging → intermediate → marts |
+| Data quality | Manual sanity checks | **29 automated dbt tests** (unique, not_null, accepted_values, relationships) |
+| Modeling | Implicit | Explicit **dimensional model** (star schema) |
+| Automation | Manual | **Orchestration script + Windows Task Scheduler** |
+| BI layer | Power BI on CSVs | Power BI on the **dbt/DuckDB marts** |
+
+The goal of v2 is to show the ability to build the **upstream analytical layer** — not just the dashboard — from raw source to curated, tested, reporting-ready data.
+
+---
 
 ## What This Project Demonstrates
-This project simulates a PMO reporting environment and turns portfolio data into a decision-support dashboard built with Power BI and Python.
 
-It is designed to help answer three practical questions:
+- Designing a layered **ELT pipeline** (raw → staging → intermediate → marts) with dbt.
+- **Dimensional modeling** (fact and dimension tables, star schema).
+- **Data quality** enforcement through automated tests.
+- **Lightweight orchestration** with sequencing, error handling, logging, and scheduling.
+- **End-to-end BI integration**: connecting a dbt/DuckDB model to Power BI without breaking an existing report.
 
-- Which programs are underperforming on delivery?
-- Where is risk concentrated across the portfolio?
-- Which projects or milestone phases should be prioritized for corrective action?
+---
 
-## Why This Project Matters
-This dashboard is designed to support portfolio-level decision-making, not just project tracking. It helps PMO analysts, portfolio managers, and program leaders identify where delivery risk is concentrated, compare execution performance across the portfolio, and focus corrective action on the areas generating the highest operational pressure.
+## Business Context & Objective
 
-## Dashboard Pages
-| Page | Purpose |
-|---|---|
-| Portfolio Overview | High-level view of portfolio health, status distribution, and issue concentration |
-| Delivery Performance | Execution trends, schedule slippage, and underperforming areas |
-| Risk Analysis | Risk exposure, severity, and drivers of delivery pressure |
+This project simulates a **PMO (Project Management Office) reporting environment** managing a portfolio of 40 projects across several programs. It turns operational project data into a decision-support tool that answers three practical questions:
 
-## Screenshots
+1. Which programs are underperforming on delivery and budget?
+2. Where is risk concentrated across the portfolio?
+3. Which projects or milestone phases should be prioritized for corrective action?
 
-### Portfolio Overview
-![Portfolio Overview](/images/portfolio_overview.png)
+The dashboard is designed for portfolio-level decision-making — helping PMO analysts, portfolio managers, and program leaders focus attention where operational pressure is highest.
 
-### Delivery Performance
-![Delivery Performance](/images/delivery_performance.png)
-
-### Risk Analysis
-![Risk Analysis](/images/risk_analysis.png)
-
-## Tools & Skills
-### Tools Used
-- Power BI (data visualization)
-- DAX (measures)
-- Python (data generation & preprocessing)
-- Pandas (data transformation)
-- GitHub (versioning & portfolio)
-
-### Skills Demonstrated
-- KPI design for portfolio management
-- Power BI dashboard development
-- Star schema modeling
-- Business-oriented data storytelling
-- Python-based data preparation
-- Risk and delivery performance analysis
-
-## Dashboard Navigation and Cross-Page Analysis
-<details><summary><strong>See more</strong></summary>
-  
-The report is designed as a connected analytical workflow rather than a set of isolated pages. Each page addresses a different portfolio management question, while shared filters preserve the same analytical scope across the dashboard.
-Users can begin with a high-level portfolio view, move to delivery execution analysis, and then examine risk concentration without losing context.
-
-### How the Pages Connect
-- Portfolio Overview provides the overall picture of portfolio health, project status, and concentration of issues
-- Delivery Performance focuses on execution trends, schedule slippage, and delivery performance across projects or programs
-- Risk Analysis highlights risk exposure, severity, and the main sources of delivery pressure
-
-Together, these pages support a progression from summary to diagnosis:
-
-- Portfolio Overview identifies where attention is needed
-- Delivery Performance explains where execution is deteriorating
-- Risk Analysis helps clarify the underlying exposure behind underperforming projects
-
-### Shared Filters Across Pages
-The dashboard uses shared slicers to maintain a consistent decision perimeter across pages.
-
-Common filters may include:
-
-- reporting period
-- project status
-- program or portfolio segment
-- business area
-- risk level
-
-When a user applies a filter on one page, that context is preserved while navigating to the others. As a result:
-
-- visuals remain aligned on the same subset of projects
-- KPI comparisons stay consistent across report pages
-- users can move from summary to detail without resetting their analysis
-
-Page-level filters may still be used for more focused exploration, but the global filter context remains the main analytical backbone of the report.
-
-### Example Analytical Flow
-A portfolio manager may start on Portfolio Overview to isolate projects marked as At Risk. From there, they can move to Delivery Performance to determine whether delays are concentrated in specific programs or milestone phases. They can then open Risk Analysis to assess whether those same projects also carry elevated risk exposure. Because the filter context is preserved across pages, the analysis remains coherent from overview to root-cause investigation.
-</details>
-
-## Business Context and Objective
-<details><summary><strong>See more</strong></summary>
-  
-This project was designed as a portfolio management dashboard for a PMO or transformation office overseeing multiple programs and projects.
-
-The objective is to support portfolio monitoring through three complementary lenses: delivery performance, risk exposure, and delay impact.
-
-### Target Audience
-- PMO analysts
-- Portfolio managers
-- Program directors
-- Transformation leaders
-</details>
+---
 
 ## Key KPIs
-<details><summary><strong>See more</strong></summary>
 
-- On-time delivery rate: share of projects delivered on or before target date
-- Budget variance: difference between actual and planned budget
-- Delay impact: cumulative delay generated by late projects
-- High-risk project ratio: share of projects flagged as high risk
-- Top delay contributors: projects accounting for the largest share of total delay impact
-  </details>
+- **On-track rate** — share of projects delivering on schedule
+- **Budget variance (%)** — actual vs. planned cost across the portfolio
+- **Delayed projects / milestones** — schedule slippage volume
+- **Average milestone delay (days)** — execution pressure indicator
+- **Risk exposure** — count and severity of risks, high-risk concentration
+- **Resource allocation** — workload distribution and delivery pressure per project
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[Raw CSV sources] -->|dbt seed| B[(DuckDB<br/>raw schema)]
+    B --> C[staging<br/>clean & rename]
+    C --> D[intermediate<br/>business logic & aggregation]
+    D --> E[marts<br/>star schema]
+    E --> F[Power BI<br/>dashboard]
+    G[run_pipeline.py<br/>orchestration] -.seed / run / test.-> B
+```
+
+**Flow:** raw CSVs are loaded into DuckDB as seeds, then transformed through three dbt layers, exposed as a star schema, and consumed by Power BI.
+
+---
+
+## Tech Stack
+
+- **dbt Core** + **dbt-duckdb** — ELT transformations, tests, documentation
+- **DuckDB** — local analytical database (zero-server)
+- **Python** (pandas, duckdb) — source data generation, Power BI connection bridge, orchestration
+- **Power BI** — semantic model and interactive dashboard
+- **Windows Task Scheduler** — scheduled pipeline runs
+- **Git / GitHub** — versioning and portfolio
+
+---
+
+## dbt Layers
+
+The pipeline is organized in three layers with clear responsibilities.
+
+### `staging` (materialized as views)
+One model per source, doing **only** cleaning and standardization (snake_case renaming, type casting). No business logic.
+- `stg_projects`, `stg_milestones`, `stg_risks`, `stg_resources`
+
+### `intermediate` (materialized as views)
+First business logic and aggregations.
+- `int_projects` — budget variance, project duration, delay flag
+- `int_milestones`, `int_risks`, `int_resources` — metrics aggregated **per project**
+- `int_milestones_detail`, `int_risks_detail` — enriched detail grain (one row per milestone / risk)
+
+### `marts` (materialized as tables)
+Final, reporting-ready dimensional model.
+- `dim_project` — descriptive attributes (name, program, sponsor, priority)
+- `fct_project_summary` — project-level measures (budget, variance, risks, milestones, resources)
+
+---
 
 ## Data Model
-<details><summary><strong>See more</strong></summary>
 
-The model follows a star schema structure (fact & dimension tables), supporting KPI consistency, scalable filtering and drill-down analysis.
+A simple **star schema**: a fact table (`fct_project_summary`) referencing a dimension (`dim_project`) on `project_id`.
 
-The dashboard relies on a relational model connecting projects, milestones, risks, and resources to support portfolio-level analysis.
+![Data Model](images/data_model.png)
 
-![Page 4](images/data_model.png)
-</details>
-
-## Data Preparation Workflow
-<details><summary><strong>See more</strong></summary>
-  
-1. Generate realistic portfolio data using Python
-2. Run sanity checks across projects, milestones and risks
-3. Enrich the datasets for reporting use cases
-4. Build the data model in Power BI
-5. Design KPI-driven dashboard pages for executive and operational analysis
-
-### How the Data Is Rebuilt
-The reporting datasets used in this dashboard are rebuilt through a three-step Python workflow. The first script generates a realistic portfolio dataset, the second script validates consistency rules across the generated files, and the third script enriches the datasets with reporting-oriented fields used in the Power BI model.
-This approach makes the project reproducible and shows how raw simulated data can be turned into structured, analysis-ready inputs for portfolio reporting.
-
-### Transformation Logic
-Python is used to move the project from raw simulated records to analysis-ready reporting tables. This includes generating base entities, checking consistency across projects, milestones and risks, and enriching the data with fields that support KPI calculation, filtering and business interpretation in Power BI.
-The transformation flow can be summarized as follows: simulated source data -> sanity checks -> enriched reporting tables -> Power BI model -> dashboard analysis.
-</details>
+---
 
 ## Business Assumptions
-<details><summary><strong>See more</strong></summary>
-  
-This project relies on a set of business assumptions designed to simulate a realistic PMO reporting environment. These assumptions include project status classification, milestone delay logic, budget variance calculation, and risk scoring rules used to flag high-risk projects.
-The objective is not to replicate a specific company's methodology, but to demonstrate how analytical rules can be structured to support portfolio-level monitoring, prioritization and escalation.
-</details>
+
+- A project is flagged **delayed** when its status is `Delayed`.
+- A milestone is **late** when its actual date is past its planned date (`delay_days > 0`).
+- **Risk score** is defined as `impact × probability`; a risk is **high** when its level is `High`.
+- Budget variance is `actual_cost − budget`; a positive value means an overrun.
+
+---
 
 ## Example Analytical Rule
-<details><summary><strong>See more</strong></summary>
 
-High-risk projects are flagged using a derived risk score calculated as Impact x Probability at the risk level. Projects associated with high-scoring risks can then be aggregated and compared against delivery indicators to identify where execution issues and risk exposure overlap.
-</details>
+A project's **delivery pressure** combines three signals available in `fct_project_summary`: budget overrun (`budget_variance_pct`), schedule slippage (`delayed_milestones`, `avg_delay_days`), and risk exposure (`high_risk_count`, `avg_risk_score`). Projects scoring high on several of these at once are the ones surfaced for corrective action in the dashboard.
 
-## Key Insights
-<details><summary><strong>See more</strong></summary>
+---
 
-The analysis highlights where execution pressure, delay concentration, and risk exposure intersect across the portfolio.
+## Data Quality
 
-It helps surface insights such as:
+The pipeline includes **29 automated dbt tests**, covering:
+- `unique` and `not_null` on primary keys across all layers
+- `accepted_values` on categorical fields (status, priority, risk level)
+- `relationships` (referential integrity between `fct_project_summary` and `dim_project`)
 
-- which parts of the portfolio concentrate the highest proportion of projects under pressure,
-- whether delivery slippage appears isolated or systemic across programs,
-- which at-risk projects combine weak delivery performance with elevated risk exposure,
-- where portfolio managers may need to prioritize escalation or corrective action.
-</details>
+Run them with:
 
-## Recommendations
-<details><summary><strong>See more</strong></summary>
-  
-- Prioritize corrective action on the top delayed projects rather than spreading attention evenly across the portfolio.
-- Review milestone governance in Planning and Testing phases to reduce repeated execution bottlenecks.
-- Use targeted program reviews for underperforming areas instead of portfolio-wide generic escalation.
-- Track delivery and risk indicators together to anticipate execution slippage earlier.
-</details>
+```bash
+dbt test
+```
+
+---
+
+## Orchestration
+
+`run_pipeline.py` runs the full pipeline (`dbt seed` → `dbt run` → `dbt test`) with:
+- **sequencing** (each step in order),
+- **error handling** (stops immediately if a step fails),
+- **timestamped logging** to both the console and `logs/pipeline.log`.
+
+It can be scheduled to run automatically via **Windows Task Scheduler** (a `run_pipeline.bat` wrapper is provided).
+
+```bash
+python run_pipeline.py
+```
+
+---
+
+## Dashboard
+
+The Power BI report is connected to the dbt marts through a Python bridge (`power_bi_source.py`, which reads DuckDB in read-only mode) and includes the following pages:
+
+- **Portfolio Overview** — portfolio health, status distribution, budget control
+- **Risk Analysis** — risk exposure, severity, most exposed projects
+- **Delivery & Performance** — schedule adherence, delays, budget execution
+
+### Screenshots
+
+**Portfolio Overview**
+![Portfolio Overview](images/portfolio_overview.png)
+
+**Risk Analysis**
+![Risk Analysis](images/risk_analysis.png)
+
+**Delivery & Performance**
+![Delivery Performance](images/delivery_performance.png)
+
+---
+
+## Key Insights & Recommendations
+
+- Delivery risk is **concentrated in a small number of projects** that combine budget overruns, milestone delays, and high-severity risks — these should be prioritized for corrective action.
+- **Milestone delays vary by delivery phase**, pointing to specific stages where execution support is most needed.
+- Budget variance is **not evenly distributed across programs**, helping target financial oversight where it matters most.
+
+> Insights are illustrative and based on simulated data; the value of the project is the repeatable analytical workflow, not the specific figures.
+
+---
 
 ## Reproducibility
-<details><summary><strong>See more</strong></summary>
 
-The project can be reproduced from the Python scripts and CSV outputs included in this repository.
-  
-### Steps
-1. Run `1_generate_portfolio_data.py` to generate the base portfolio datasets
-2. Run `2_sanity_checks.py` to validate data consistency across projects, milestones and risks
-3. Run `3_enrich_data.py` to create reporting-ready datasets for the dashboard
-4. Open the Power BI file and connect it to the generated files in the `data/` folder
-### Output Files
-The workflow produces and updates CSV files in the `data/` folder, including project, milestone, risk and resource datasets used in the final model.
-### Notes
-The data used in this project is simulated for demonstration purposes. The goal is to showcase analytical reasoning, KPI design, data preparation and dashboard storytelling in a realistic PMO reporting scenario.
-### Requirements
-- Python 3.x
-- pandas
-- Power BI Desktop
-- Access to the files stored in the `data/` folder
-</details>
+```bash
+# 1. Create and activate a virtual environment, then install dependencies
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+# 2. Build and test the pipeline
+cd portfolio_analytics
+dbt seed
+dbt run
+dbt test
+
+# (or run everything at once, from the repo root)
+python run_pipeline.py
+```
+
+The DuckDB database (`data/portfolio.duckdb`) is fully regenerable from the source CSVs, so it is not versioned.
+
+To connect Power BI: **Get Data → Python script**, and paste the contents of `power_bi_source.py`.
+
+---
 
 ## Project Structure
-<details><summary><strong>See more</strong></summary>
 
-- `analysis/1_generate_portfolio_data.py` -> generates the base portfolio datasets
-- `analysis/2_sanity_checks.py` -> validates consistency across projects, milestones, risks, and resources
-- `analysis/3_enrich_data.py` -> enriches the datasets with reporting-oriented fields
-- `dashboard/project-portfolio-analytics-dashboard.pbix` -> Power BI dashboard file
-- `data/` -> generated CSV datasets used in the reporting workflow
-- `images/data_model.png` -> data model visual
-- `images/delivery_performance.png, portfolio_overview.png, risk_analysis.png` -> dashboard screenshots
-</details>
+```
+project-portfolio-analytics-dashboard/
+├── portfolio_analytics/          # dbt project
+│   ├── dbt_project.yml
+│   ├── profiles.yml
+│   ├── seeds/                    # raw source CSVs
+│   └── models/
+│       ├── staging/
+│       ├── intermediate/
+│       └── marts/
+├── data/                         # source CSVs (DuckDB db is gitignored)
+├── images/                       # dashboard & data-model screenshots
+├── run_pipeline.py               # orchestration script
+├── run_pipeline.bat              # Task Scheduler wrapper
+├── power_bi_source.py            # DuckDB → Power BI bridge
+├── explore_duckdb.py             # ad-hoc DuckDB exploration
+├── requirements.txt
+├── 1_generate_portfolio_data.py  # source data generation (project origin)
+├── 2_sanity_checks.py            # legacy (v1)
+├── 3_enrich_data.py              # legacy pandas enrichment (v1, superseded by dbt)
+└── project-portfolio-analytics-dashboard.pbix
+```
+
+---
+
+## Skills Demonstrated
+
+- ELT pipeline design with dbt (layered modeling, `ref()`, materializations)
+- Advanced SQL (CTEs-friendly logic, window-free aggregations, joins, `coalesce`, date functions)
+- Dimensional modeling (fact/dimension, star schema, grain)
+- Data quality testing and referential integrity
+- Orchestration (sequencing, error handling, logging, scheduling)
+- End-to-end BI integration with Power BI
+- Git-based versioning and portfolio presentation
+
+---
+
+## Evolution Toward Production
+
+This project runs fully locally (DuckDB + a lightweight orchestration script + Windows Task Scheduler), which is ideal for a self-contained, reproducible portfolio. Because the dbt models are **warehouse-agnostic**, the same design scales onto a production stack with minimal changes to the modeling logic. Two realistic paths:
+
+### Path A — Modern data stack
+
+- **Storage:** replace DuckDB with **Snowflake** (or BigQuery) — the cloud equivalent of the local analytical database.
+- **Transformations:** run the same dbt models against the cloud warehouse (only the dbt adapter changes).
+- **Orchestration:** replace `run_pipeline.py` + Task Scheduler with **Apache Airflow** (DAGs, dependencies, retries, monitoring) — the production-grade version of the orchestration logic already implemented here.
+- **BI:** Power BI (or Looker) on top of the curated marts.
+
+### Path B — Microsoft-native (Fabric)
+
+- **Storage:** a Fabric **Lakehouse / Warehouse** instead of DuckDB.
+- **Transformations:** the same dbt models against the Fabric warehouse.
+- **Orchestration:** **Fabric Data Pipelines** for scheduling, monitoring, and alerting.
+- **BI:** Power BI connected natively to the Fabric semantic model.
+
+In both cases, the layered, tested, dimensional design stays identical — only the underlying platform and orchestrator change. This is exactly why the pipeline was built tool-agnostically with dbt.
+
+---
 
 ## Notes
-<details><summary><strong>See more</strong></summary>
-  
-The data used in this project is simulated for demonstration purposes.
 
-The emphasis is on analytical reasoning, KPI design, transformation logic, dashboard structure, and business-oriented interpretation in a realistic PMO reporting scenario.
-</details>
+- The dataset is **simulated** for demonstration purposes.
+- The DuckDB database and dbt build artifacts are regenerable and therefore excluded from version control.

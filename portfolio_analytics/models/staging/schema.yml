@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: stg_projects
+    columns:
+      - name: project_id
+        tests:
+          - unique
+          - not_null
+      - name: status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['On Track', 'At Risk', 'Delayed']
+      - name: priority
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Low', 'Medium', 'High']
+
+  - name: stg_milestones
+    columns:
+      - name: milestone_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_risks
+    columns:
+      - name: risk_id
+        tests:
+          - unique
+          - not_null
+      - name: risk_level
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Low', 'Medium', 'High']
+      - name: status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Open', 'Mitigated', 'Closed']
+
+  - name: stg_resources
+    columns:
+      - name: resource_id
+        tests:
+          - unique
+          - not_null
