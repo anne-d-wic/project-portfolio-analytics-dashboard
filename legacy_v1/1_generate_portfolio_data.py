@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np
 import random
 from datetime import datetime, timedelta
+from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
 np.random.seed(42)
 
 # --- PARAMETERS ---
@@ -59,7 +61,7 @@ projects_df = pd.DataFrame(projects, columns=[
     "Budget", "ActualCost", "Status", "Priority", "Sponsor"
 ])
 
-projects_df.to_csv("data/projects.csv", index=False)
+projects_df.to_csv(REPO_ROOT / "data" / "projects.csv", index=False)
 
 # --- MILESTONES ---
 milestones = []
@@ -96,7 +98,7 @@ milestones_df = pd.DataFrame(milestones, columns=[
     "MilestoneID", "ProjectID", "MilestoneName", "PlannedDate", "ActualDate", "DelayDays"
 ])
 
-milestones_df.to_csv("data/milestones.csv", index=False)
+milestones_df.to_csv(REPO_ROOT / "data" / "milestones.csv", index=False)
 
 # --- RISKS ---
 risks = []
@@ -132,7 +134,7 @@ risks_df = pd.DataFrame(risks, columns=[
     "RiskID", "ProjectID", "RiskLevel", "Impact", "Probability", "Status"
 ])
 
-risks_df.to_csv("data/risks.csv", index=False)
+risks_df.to_csv(REPO_ROOT / "data" / "risks.csv", index=False)
 
 # --- RESOURCES ---
 roles = ["Developer", "Manager", "Analyst", "Engineer"]
@@ -162,6 +164,6 @@ resources_df = pd.DataFrame(resources, columns=[
     "ResourceID", "ProjectID", "Role", "AllocationPct", "Cost"
 ])
 
-resources_df.to_csv("data/resources.csv", index=False)
+resources_df.to_csv(REPO_ROOT / "data" / "resources.csv", index=False)
 
 print("Portfolio dataset generated successfully.")

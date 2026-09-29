@@ -1,10 +1,13 @@
 import pandas as pd
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # Load datasets
-projects = pd.read_csv("data/projects.csv")
-milestones = pd.read_csv("data/milestones.csv")
-risks = pd.read_csv("data/risks.csv")
-resources = pd.read_csv("data/resources.csv")
+projects = pd.read_csv(REPO_ROOT / "data" / "projects.csv")
+milestones = pd.read_csv(REPO_ROOT / "data" / "milestones.csv")
+risks = pd.read_csv(REPO_ROOT / "data" / "risks.csv")
+resources = pd.read_csv(REPO_ROOT / "data" / "resources.csv")
 
 print("=== DATASET SHAPES ===")
 print("Projects:", projects.shape)
@@ -108,3 +111,4 @@ print("\n=== PROGRAM DISTRIBUTION ===")
 print(projects["Program"].value_counts())
 
 print("\nSanity checks completed.")
+risks.to_csv(REPO_ROOT / "data" / "risks.csv", index=False)

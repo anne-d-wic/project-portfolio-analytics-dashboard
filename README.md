@@ -145,22 +145,22 @@ dbt test
 
 ## Orchestration
 
-`run_pipeline.py` runs the full pipeline (`dbt seed` → `dbt run` → `dbt test`) with:
+`scripts/run_pipeline.py` runs the full pipeline (`dbt seed` → `dbt run` → `dbt test`) with:
 - **sequencing** (each step in order),
 - **error handling** (stops immediately if a step fails),
 - **timestamped logging** to both the console and `logs/pipeline.log`.
 
-It can be scheduled to run automatically via **Windows Task Scheduler** (a `run_pipeline.bat` wrapper is provided).
+All paths are resolved relative to the repository root (via `Path(__file__)`), so the script can be launched from any working directory. It can be scheduled to run automatically via **Windows Task Scheduler** (a `scripts/run_pipeline.bat` wrapper is provided).
 
 ```bash
-python run_pipeline.py
+python scripts/run_pipeline.py
 ```
 
 ---
 
 ## Dashboard
 
-The Power BI report is connected to the dbt marts through a Python bridge (`power_bi_source.py`, which reads DuckDB in read-only mode) and includes the following pages:
+The Power BI report is connected to the dbt marts through a Python bridge (`scripts/power_bi_source.py`, which reads DuckDB in read-only mode) and includes the following pages:
 
 - **Portfolio Overview** — portfolio health, status distribution, budget control
 - **Risk Analysis** — risk exposure, severity, most exposed projects
@@ -203,13 +203,22 @@ dbt seed
 dbt run
 dbt test
 
-# (or run everything at once, from the repo root)
-python run_pipeline.py
+# (or run everything at once, from anywhere in the repo)
+python scripts/run_pipeline.py
 ```
 
 The DuckDB database (`data/portfolio.duckdb`) is fully regenerable from the source CSVs, so it is not versioned.
 
-To connect Power BI: **Get Data → Python script**, and paste the contents of `power_bi_source.py`.
+### Connecting Power BI
+
+In Power BI Desktop: **Get Data → Python script**, and paste the contents of `scripts/power_bi_source.py`.
+
+Because Power BI runs the snippet outside of any file, that script cannot resolve the repository root on its own. Point it to the database in either of two ways:
+
+- set a `PORTFOLIO_DB_PATH` environment variable to the full path of `data/portfolio.duckdb` (recommended), or
+- edit the fallback path at the top of the script.
+
+The connection is opened in **read-only mode** so that the report can be refreshed while dbt writes to the same database.
 
 ---
 
@@ -225,17 +234,21 @@ project-portfolio-analytics-dashboard/
 │       ├── staging/
 │       ├── intermediate/
 │       └── marts/
+├── scripts/                      # v2 tooling
+│   ├── run_pipeline.py           # orchestration script
+│   ├── run_pipeline.bat          # Task Scheduler wrapper
+│   ├── power_bi_source.py        # DuckDB → Power BI bridge
+│   └── explore_duckdb.py         # ad-hoc DuckDB exploration
+├── legacy_v1/                    # superseded by dbt, kept to document the v1 → v2 move
+│   ├── 1_generate_portfolio_data.py  # source data generation (project origin)
+│   ├── 2_sanity_checks.py
+│   └── 3_enrich_data.py          # pandas enrichment, replaced by the dbt layers
 ├── data/                         # source CSVs (DuckDB db is gitignored)
 ├── images/                       # dashboard & data-model screenshots
-├── run_pipeline.py               # orchestration script
-├── run_pipeline.bat              # Task Scheduler wrapper
-├── power_bi_source.py            # DuckDB → Power BI bridge
-├── explore_duckdb.py             # ad-hoc DuckDB exploration
+├── powerbi/
+│   └── project-portfolio-analytics-dashboard.pbix
 ├── requirements.txt
-├── 1_generate_portfolio_data.py  # source data generation (project origin)
-├── 2_sanity_checks.py            # legacy (v1)
-├── 3_enrich_data.py              # legacy pandas enrichment (v1, superseded by dbt)
-└── project-portfolio-analytics-dashboard.pbix
+└── README.md
 ```
 
 ---

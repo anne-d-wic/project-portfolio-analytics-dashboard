@@ -1,9 +1,12 @@
 import pandas as pd
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # Load datasets
-projects = pd.read_csv("data/projects.csv")
-milestones = pd.read_csv("data/milestones.csv")
-risks = pd.read_csv("data/risks.csv")
+projects = pd.read_csv(REPO_ROOT / "data" / "projects.csv")
+milestones = pd.read_csv(REPO_ROOT / "data" / "milestones.csv")
+risks = pd.read_csv(REPO_ROOT / "data" / "risks.csv")
 
 # Convert dates
 projects["StartDate"] = pd.to_datetime(projects["StartDate"])
@@ -49,8 +52,8 @@ milestones["IsDelayedMilestone"] = (milestones["DelayDays"] > 0).astype(int)
 # SAVE FILES
 # =========================
 
-projects.to_csv("data/projects_enriched.csv", index=False)
-risks.to_csv("data/risks_enriched.csv", index=False)
-milestones.to_csv("data/milestones_enriched.csv", index=False)
+projects.to_csv(REPO_ROOT / "data" / "projects_enriched.csv", index=False)
+risks.to_csv(REPO_ROOT / "data" / "risks_enriched.csv", index=False)
+milestones.to_csv(REPO_ROOT / "data" / "milestones_enriched.csv", index=False)
 
 print("Data enrichment completed successfully.")

@@ -1,10 +1,13 @@
 import duckdb
 import pandas as pd
+import os
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
 
-con = duckdb.connect(r'C:\Users\annew\Documents\ANIA\Formations\project-portfolio-analytics-dashboard\data\portfolio.duckdb', read_only=True)
+# __file__ is undefined in Power BI's Python host, so the path comes from the environment.
+path = os.environ.get("PORTFOLIO_DB_PATH", r"C:\path\to\project-portfolio-analytics-dashboard\data\portfolio.duckdb")
+con = duckdb.connect(path, read_only=True)
 
 projects_enriched = con.sql("select * from main_intermediate.int_projects").df()
 projects_enriched = projects_enriched.rename(columns={

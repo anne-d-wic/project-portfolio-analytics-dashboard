@@ -1,14 +1,16 @@
 import subprocess
 import sys
 from datetime import datetime
+from pathlib import Path
 
-import os
-os.makedirs("logs", exist_ok=True)
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+(REPO_ROOT / "logs").mkdir(exist_ok=True)
 
 def log(message):
     line = f"[{datetime.now():%Y-%m-%d %H:%M:%S}] {message}"
     print(line)
-    with open("logs/pipeline.log", "a", encoding="utf-8") as f:
+    with open(REPO_ROOT / "logs" / "pipeline.log", "a", encoding="utf-8") as f:
         f.write(line + "\n")
 
 # Call dbt through the running interpreter so the pipeline uses the active venv,
@@ -23,7 +25,7 @@ steps = [
 
 for step in steps:
     log(f"Starting: dbt {' '.join(step)}")
-    result = subprocess.run(DBT + step, cwd="portfolio_analytics")
+    result = subprocess.run(DBT + step, cwd=REPO_ROOT / "portfolio_analytics")
     if result.returncode != 0:
         log(f"Failed: dbt {' '.join(step)}")
         sys.exit(result.returncode)
