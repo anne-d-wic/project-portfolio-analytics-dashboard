@@ -2,12 +2,16 @@ version: 2
 
 models:
   - name: dim_project
+    description: >
+      One row per project. Contains descriptive project information (project name, program, priority, sponsor) which can't be aggregated.
     columns:
       - name: project_id
         tests:
           - unique
           - not_null
   - name: fct_project_summary
+    description: >
+      One row per project. Aggregates budget, risk and milestone metrics from the intermediate layer.
     columns:
       - name: project_id
         tests:
@@ -17,4 +21,18 @@ models:
               arguments:
                 to: ref('dim_project')
                 field: project_id
-  
+      - name: budget_variance
+        description: >
+          The variance between the actual and budgeted project costs. A negative value indicates that the project is under budget, while a positive value indicates that the project is over budget.
+      - name: budget_variance_pct
+        description: >
+          The variance ratio of the actual project cost compared to the initial project budget. A negative ratio indicates how much the project is under the initial budget (-0.15 means 15% under budget), while a positive ratio indicates how much the project is over initial budget (0.26 means 26% over budget).
+      - name: total_risks
+        description: >
+          The total number of risks associated with the project.
+      - name: high_risk_count
+        description: >
+          The number of high-risk items (risk_level = 'High') associated with the project.
+      - name: delayed_milestones
+        description: >
+          The number of delayed milestones (delay_days > 0) associated with the project.
