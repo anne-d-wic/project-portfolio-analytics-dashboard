@@ -213,10 +213,18 @@ The DuckDB database (`data/portfolio.duckdb`) is fully regenerable from the sour
 
 In Power BI Desktop: **Get Data → Python script**, and paste the contents of `scripts/power_bi_source.py`.
 
-Because Power BI runs the snippet outside of any file, that script cannot resolve the repository root on its own. Point it to the database in either of two ways:
+Power BI runs Python scripts with the interpreter declared in **Options → Global → Python scripting**, which is *not* the project virtual environment by default. That interpreter needs `duckdb`, `pandas` and `matplotlib` (Power BI imports `matplotlib` even when the script does not use it):
+
+```bash
+pip install duckdb pandas matplotlib
+```
+
+Because Power BI runs the snippet outside of any file, the script cannot resolve the repository root on its own. Point it to the database in either of two ways:
 
 - set a `PORTFOLIO_DB_PATH` environment variable to the full path of `data/portfolio.duckdb` (recommended), or
 - edit the fallback path at the top of the script.
+
+Power BI reads environment variables at startup, so restart it after setting the variable.
 
 The connection is opened in **read-only mode** so that the report can be refreshed while dbt writes to the same database.
 
