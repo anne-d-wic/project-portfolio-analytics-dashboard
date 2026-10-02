@@ -41,6 +41,18 @@ models:
           - accepted_values:
               arguments:
                 values: ['Open', 'Mitigated', 'Closed']
+      - name: impact
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 5
+      - name: probability
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 5
 
   - name: stg_resources
     columns:
