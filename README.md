@@ -19,7 +19,7 @@ The report supports portfolio-level review across project health, risk, delivery
 **Delivery & Performance**
 ![Delivery & Performance](images/delivery_performance.png)
 
-## Project Evolution: V2 First
+## Project Evolution
 
 | Dimension | V2: Current | V1: Original |
 |---|---|---|
@@ -44,10 +44,7 @@ The simulated portfolio contains 40 projects across several programs. The dashbo
 
 **Illustrative findings:** delivery risk is concentrated in projects combining overruns, milestone delays, and high-severity risks; milestone delays vary by phase; budget variance differs across programs. These insights are based on simulated data, so the value is the repeatable analytical workflow rather than the figures themselves.
 
-<details>
-<summary><strong>Technical details: architecture, data modeling, quality, and reproducibility</strong></summary>
-
-### Architecture
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -60,7 +57,7 @@ flowchart LR
     H[scripts/run_pipeline.py] -.seed / run / test.-> B
 ```
 
-### Data Model and dbt Layers
+## Data Model and dbt Layers
 
 The reporting model is a simple star schema: `fct_project_summary` contains project-level measures and references `dim_project` by `project_id`.
 
@@ -72,7 +69,7 @@ The reporting model is a simple star schema: `fct_project_summary` contains proj
 
 Business rules include `budget_variance = actual_cost - budget` (positive means over budget), milestone delay when `delay_days > 0`, and risk score as `impact * probability`.
 
-### Data Quality and History
+## Data Quality and History
 
 The project has **34 automated dbt tests**:
 - `unique`, `not_null`, `accepted_values`, and `relationships` checks
@@ -87,7 +84,7 @@ Run the test suite from `portfolio_analytics`:
 dbt test
 ```
 
-### Documentation and Lineage
+## Documentation and Lineage
 
 The [published dbt docs](https://anne-d-wic.github.io/project-portfolio-analytics-dashboard/) expose models, columns, tests, compiled SQL, and lineage derived from `ref()` calls. Business descriptions currently focus on the marts and selected metrics.
 
@@ -102,11 +99,11 @@ dbt docs generate --static
 Copy-Item target\static_index.html ..\docs\index.html -Force
 ```
 
-### Orchestration
+## Orchestration
 
 `scripts/run_pipeline.py` runs `dbt seed`, `dbt run`, and `dbt test` in sequence. It stops on failure and writes timestamped output to the console and `logs/pipeline.log`. Paths are resolved relative to the repository root, so it can be launched from any working directory. `scripts/run_pipeline.bat` is the Windows Task Scheduler wrapper. The scheduled pipeline does not run snapshots.
 
-### Reproduce Locally
+## Reproduce Locally
 
 From the repository root, create the Python environment and install dependencies:
 
@@ -136,7 +133,7 @@ python scripts/run_pipeline.py
 
 The DuckDB database (`data/portfolio.duckdb`) and dbt build artifacts are regenerable and are not versioned.
 
-### Power BI Python Connection
+## Power BI Python Connection
 
 In Power BI Desktop, use **Get Data → Python script** and paste `scripts/power_bi_source.py`. Power BI runs the interpreter selected in **Options → Global → Python scripting**, which may differ from `.venv`. Install the bridge dependencies into that selected Python interpreter; Power BI also imports `matplotlib` when running the script:
 
@@ -152,7 +149,7 @@ Power BI executes the pasted code outside a file, so `__file__` is unavailable. 
 
 Restart Power BI after changing the environment variable. The database connection is read-only so the report can read while dbt writes.
 
-### Project Structure
+## Project Structure
 
 ```text
 project-portfolio-analytics-dashboard/
@@ -167,7 +164,7 @@ project-portfolio-analytics-dashboard/
 └── README.md
 ```
 
-### Stack and Possible Evolution
+## Stack and Possible Evolution
 
 The project uses dbt Core, dbt-duckdb, DuckDB, Python, Power BI, GitHub, and Windows Task Scheduler. Its layered and tested model is a foundation that could be adapted to a production stack; SQL dialects, adapters, and platform-specific behavior may require changes.
 
@@ -175,4 +172,3 @@ The project uses dbt Core, dbt-duckdb, DuckDB, Python, Power BI, GitHub, and Win
 - **Microsoft-native:** Fabric Lakehouse or Warehouse, Fabric Data Pipelines, and Power BI.
 
 These are potential next steps, not technologies implemented in this project.
-</details>
