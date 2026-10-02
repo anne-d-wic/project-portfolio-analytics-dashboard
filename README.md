@@ -1,196 +1,14 @@
 # Project Portfolio Analytics Dashboard
 
-End-to-end analytics project that turns raw project-portfolio data into a decision-ready Power BI dashboard, built on a modern **ELT pipeline** with **dbt**, **DuckDB**, layered data modeling, data quality tests, and lightweight orchestration.
+A simulated PMO portfolio dashboard backed by a tested dbt + DuckDB ELT pipeline. The project evolves an existing Power BI report from CSV-based preparation to a layered analytics-engineering workflow.
 
-> **This is v2 of the project.** The original version (a Power BI dashboard powered by a Python/Pandas preprocessing workflow) is preserved on the [`v1-powerbi-pandas`](../../tree/v1-powerbi-pandas) branch and as [release `v1.0`](../../releases/tag/v1.0). See [Project Evolution](#project-evolution-v1--v2) below.
+**Current version:** V2, dbt + DuckDB + Power BI. The original pandas workflow is preserved on the [`v1-powerbi-pandas`](../../tree/v1-powerbi-pandas) branch and in [release `v1.0`](../../releases/tag/v1.0).
 
-📘 **[Live dbt documentation & lineage graph](https://anne-d-wic.github.io/project-portfolio-analytics-dashboard/)**
+**[Live dbt documentation and lineage graph](https://anne-d-wic.github.io/project-portfolio-analytics-dashboard/)**
 
----
+## Dashboard Screenshots
 
-## Project Evolution (v1 → v2)
-
-This project was intentionally rebuilt to demonstrate the move from a simple reporting workflow to a proper analytics-engineering pipeline.
-
-| | v1 (initial version) | v2 (current version) |
-|---|---|---|
-| Data preparation | Python + Pandas scripts writing enriched CSVs | **ELT pipeline with dbt** (SQL, layered models) |
-| Storage | Flat CSV files | **DuckDB** analytical database |
-| Transformations | Ad-hoc pandas enrichment | **Layered models**: staging → intermediate → marts |
-| Data quality | Manual sanity checks | **29 automated dbt tests** (unique, not_null, accepted_values, relationships) |
-| Modeling | Implicit | Explicit **dimensional model** (star schema) |
-| Automation | Manual | **Orchestration script + Windows Task Scheduler** |
-| BI layer | Power BI on CSVs | Power BI on the **dbt/DuckDB marts** |
-
-The goal of v2 is to show the ability to build the **upstream analytical layer** — not just the dashboard — from raw source to curated, tested, reporting-ready data.
-
----
-
-## What This Project Demonstrates
-
-- Designing a layered **ELT pipeline** (raw → staging → intermediate → marts) with dbt.
-- **Dimensional modeling** (fact and dimension tables, star schema).
-- **Data quality** enforcement through automated tests.
-- **Lightweight orchestration** with sequencing, error handling, logging, and scheduling.
-- **End-to-end BI integration**: connecting a dbt/DuckDB model to Power BI without breaking an existing report.
-
----
-
-## Business Context & Objective
-
-This project simulates a **PMO (Project Management Office) reporting environment** managing a portfolio of 40 projects across several programs. It turns operational project data into a decision-support tool that answers three practical questions:
-
-1. Which programs are underperforming on delivery and budget?
-2. Where is risk concentrated across the portfolio?
-3. Which projects or milestone phases should be prioritized for corrective action?
-
-The dashboard is designed for portfolio-level decision-making — helping PMO analysts, portfolio managers, and program leaders focus attention where operational pressure is highest.
-
----
-
-## Key KPIs
-
-- **On-track rate** — share of projects delivering on schedule
-- **Budget variance (%)** — actual vs. planned cost across the portfolio
-- **Delayed projects / milestones** — schedule slippage volume
-- **Average milestone delay (days)** — execution pressure indicator
-- **Risk exposure** — count and severity of risks, high-risk concentration
-- **Resource allocation** — workload distribution and delivery pressure per project
-
----
-
-## Architecture
-
-```mermaid
-flowchart LR
-    A[Raw CSV sources] -->|dbt seed| B[(DuckDB<br/>raw schema)]
-    B --> C[staging<br/>clean & rename]
-    C --> D[intermediate<br/>business logic & aggregation]
-    D --> E[marts<br/>star schema]
-    E --> F[Power BI<br/>dashboard]
-    G[run_pipeline.py<br/>orchestration] -.seed / run / test.-> B
-```
-
-**Flow:** raw CSVs are loaded into DuckDB as seeds, then transformed through three dbt layers, exposed as a star schema, and consumed by Power BI.
-
----
-
-## Tech Stack
-
-- **dbt Core** + **dbt-duckdb** — ELT transformations, tests, documentation
-- **DuckDB** — local analytical database (zero-server)
-- **Python** (pandas, duckdb) — source data generation, Power BI connection bridge, orchestration
-- **Power BI** — semantic model and interactive dashboard
-- **Windows Task Scheduler** — scheduled pipeline runs
-- **Git / GitHub** — versioning and portfolio
-
----
-
-## dbt Layers
-
-The pipeline is organized in three layers with clear responsibilities.
-
-### `staging` (materialized as views)
-One model per source, doing **only** cleaning and standardization (snake_case renaming, type casting). No business logic.
-- `stg_projects`, `stg_milestones`, `stg_risks`, `stg_resources`
-
-### `intermediate` (materialized as views)
-First business logic and aggregations.
-- `int_projects` — budget variance, project duration, delay flag
-- `int_milestones`, `int_risks`, `int_resources` — metrics aggregated **per project**
-- `int_milestones_detail`, `int_risks_detail` — enriched detail grain (one row per milestone / risk)
-
-### `marts` (materialized as tables)
-Final, reporting-ready dimensional model.
-- `dim_project` — descriptive attributes (name, program, sponsor, priority)
-- `fct_project_summary` — project-level measures (budget, variance, risks, milestones, resources)
-
----
-
-## Data Model
-
-A simple **star schema**: a fact table (`fct_project_summary`) referencing a dimension (`dim_project`) on `project_id`.
-
-![Data Model](images/data_model.png)
-
----
-
-## Business Assumptions
-
-- A project is flagged **delayed** when its status is `Delayed`.
-- A milestone is **late** when its actual date is past its planned date (`delay_days > 0`).
-- **Risk score** is defined as `impact × probability`; a risk is **high** when its level is `High`.
-- Budget variance is `actual_cost − budget`; a positive value means an overrun.
-
----
-
-## Example Analytical Rule
-
-A project's **delivery pressure** combines three signals available in `fct_project_summary`: budget overrun (`budget_variance_pct`), schedule slippage (`delayed_milestones`, `avg_delay_days`), and risk exposure (`high_risk_count`, `avg_risk_score`). Projects scoring high on several of these at once are the ones surfaced for corrective action in the dashboard.
-
----
-
-## Data Quality
-
-The pipeline includes **29 automated dbt tests**, covering:
-- `unique` and `not_null` on primary keys across all layers
-- `accepted_values` on categorical fields (status, priority, risk level)
-- `relationships` (referential integrity between `fct_project_summary` and `dim_project`)
-
-Run them with:
-
-```bash
-dbt test
-```
-
----
-
-## Documentation & Lineage
-
-**[→ Browse the live dbt documentation](https://anne-d-wic.github.io/project-portfolio-analytics-dashboard/)**
-
-The documentation site is generated by dbt itself, so it cannot drift from the code. It exposes every model and column, the business description attached to each metric, the tests guarding them, the compiled SQL, and an interactive **lineage graph** derived from the `ref()` calls — no diagram is maintained by hand.
-
-![dbt lineage graph](images/dbt_lineage.png)
-
-The graph above is read left to right: raw seeds → `staging` → `intermediate` → `marts`. Note that `int_risks_detail` and `int_milestones_detail` are terminal nodes: they keep the detail grain required by the Power BI report, while the aggregated models feed `fct_project_summary`.
-
-Model and column descriptions live in the `schema.yml` files next to the SQL, which keeps definitions such as *"a positive `budget_variance` means the project is over budget"* versioned together with the logic that produces them.
-
-Regenerate and publish with:
-
-```bash
-cd portfolio_analytics
-dbt docs generate --static
-copy target\static_index.html ..\docs\index.html
-```
-
----
-
-## Orchestration
-
-`scripts/run_pipeline.py` runs the full pipeline (`dbt seed` → `dbt run` → `dbt test`) with:
-- **sequencing** (each step in order),
-- **error handling** (stops immediately if a step fails),
-- **timestamped logging** to both the console and `logs/pipeline.log`.
-
-All paths are resolved relative to the repository root (via `Path(__file__)`), so the script can be launched from any working directory. It can be scheduled to run automatically via **Windows Task Scheduler** (a `scripts/run_pipeline.bat` wrapper is provided).
-
-```bash
-python scripts/run_pipeline.py
-```
-
----
-
-## Dashboard
-
-The Power BI report is connected to the dbt marts through a Python bridge (`scripts/power_bi_source.py`, which reads DuckDB in read-only mode) and includes the following pages:
-
-- **Portfolio Overview** — portfolio health, status distribution, budget control
-- **Risk Analysis** — risk exposure, severity, most exposed projects
-- **Delivery & Performance** — schedule adherence, delays, budget execution
-
-### Screenshots
+The report supports portfolio-level review across project health, risk, delivery, and performance.
 
 **Portfolio Overview**
 ![Portfolio Overview](images/portfolio_overview.png)
@@ -199,127 +17,162 @@ The Power BI report is connected to the dbt marts through a Python bridge (`scri
 ![Risk Analysis](images/risk_analysis.png)
 
 **Delivery & Performance**
-![Delivery Performance](images/delivery_performance.png)
+![Delivery & Performance](images/delivery_performance.png)
 
----
+## Project Evolution: V2 First
 
-## Key Insights & Recommendations
+| Dimension | V2: Current | V1: Original |
+|---|---|---|
+| Data preparation | dbt ELT transformations in SQL | Python + pandas scripts producing enriched CSVs |
+| Storage | DuckDB analytical database | Flat CSV files |
+| Modeling | Staging, intermediate, and marts layers; star schema | Implicit model in Power BI |
+| Data quality | **34 dbt tests**, including business checks and `dbt-utils` range tests | Manual sanity checks |
+| Automation | Python orchestration + Windows Task Scheduler | Manual execution |
+| BI | Existing Power BI report connected to dbt/DuckDB models | Power BI report connected to CSVs |
 
-- Delivery risk is **concentrated in a small number of projects** that combine budget overruns, milestone delays, and high-severity risks — these should be prioritized for corrective action.
-- **Milestone delays vary by delivery phase**, pointing to specific stages where execution support is most needed.
-- Budget variance is **not evenly distributed across programs**, helping target financial oversight where it matters most.
+V2 extends the original dashboard with the upstream data layer: raw CSVs are loaded, transformed, tested, and made reporting-ready without rebuilding the report's pages or measures.
 
-> Insights are illustrative and based on simulated data; the value of the project is the repeatable analytical workflow, not the specific figures.
+## Business Context
 
----
+The simulated portfolio contains 40 projects across several programs. The dashboard helps PMO analysts, portfolio managers, and program leads answer:
 
-## Reproducibility
+- Which programs are underperforming on delivery or budget?
+- Where is risk concentrated?
+- Which projects or milestone phases need corrective action?
 
-```bash
-# 1. Create and activate a virtual environment, then install dependencies
+**Key measures:** on-track rate, budget variance, delayed projects and milestones, average milestone delay, risk exposure, and resource allocation.
+
+**Illustrative findings:** delivery risk is concentrated in projects combining overruns, milestone delays, and high-severity risks; milestone delays vary by phase; budget variance differs across programs. These insights are based on simulated data, so the value is the repeatable analytical workflow rather than the figures themselves.
+
+<details>
+<summary><strong>Technical details: architecture, data modeling, quality, and reproducibility</strong></summary>
+
+### Architecture
+
+```mermaid
+flowchart LR
+    A[Raw CSV sources] -->|dbt seed| B[(DuckDB raw schema)]
+    B --> C[Staging views]
+    C --> D[Intermediate views]
+    D --> E[Mart tables]
+    E --> F[Power BI report]
+    C -.dbt snapshot.-> G[(SCD Type 2 project history)]
+    H[scripts/run_pipeline.py] -.seed / run / test.-> B
+```
+
+### Data Model and dbt Layers
+
+The reporting model is a simple star schema: `fct_project_summary` contains project-level measures and references `dim_project` by `project_id`.
+
+![Project portfolio star schema](images/data_model.png)
+
+- **Staging views:** `stg_projects`, `stg_milestones`, `stg_risks`, `stg_resources` standardize names and types without business logic.
+- **Intermediate views:** `int_projects` derives budget variance, project duration, and delay status. Aggregated models summarize milestones, risks, and resources by project; detail models retain one row per milestone or risk for Power BI.
+- **Marts:** `dim_project` holds descriptive project attributes; `fct_project_summary` combines project-level budget, risk, milestone, and resource measures.
+
+Business rules include `budget_variance = actual_cost - budget` (positive means over budget), milestone delay when `delay_days > 0`, and risk score as `impact * probability`.
+
+### Data Quality and History
+
+The project has **34 automated dbt tests**:
+- `unique`, `not_null`, `accepted_values`, and `relationships` checks
+- Three singular SQL tests for milestone date/delay consistency and aggregate reconciliation of delayed milestones and high risks
+- `dbt-utils` `accepted_range` checks requiring risk impact and probability to be between 1 and 5
+
+The `projects_snapshot` snapshot uses the **check** strategy and `project_id` as its key. It tracks changes in `status`, `priority`, `actual_cost`, and `end_date`, preserving versions with `dbt_valid_from` and `dbt_valid_to`. It runs separately from the seed/run/test pipeline. Since source CSVs are static, a snapshot records a change only when the source relation changes between snapshot runs.
+
+Run the test suite from `portfolio_analytics`:
+
+```powershell
+dbt test
+```
+
+### Documentation and Lineage
+
+The [published dbt docs](https://anne-d-wic.github.io/project-portfolio-analytics-dashboard/) expose models, columns, tests, compiled SQL, and lineage derived from `ref()` calls. Business descriptions currently focus on the marts and selected metrics.
+
+![dbt model lineage graph](images/dbt_lineage.png)
+
+The detail models `int_risks_detail` and `int_milestones_detail` are separate terminal paths because Power BI needs their atomic grain; aggregated models feed `fct_project_summary`.
+
+Regenerate the static documentation from `portfolio_analytics` after changing models or metadata, then copy it into `docs/`:
+
+```powershell
+dbt docs generate --static
+Copy-Item target\static_index.html ..\docs\index.html -Force
+```
+
+### Orchestration
+
+`scripts/run_pipeline.py` runs `dbt seed`, `dbt run`, and `dbt test` in sequence. It stops on failure and writes timestamped output to the console and `logs/pipeline.log`. Paths are resolved relative to the repository root, so it can be launched from any working directory. `scripts/run_pipeline.bat` is the Windows Task Scheduler wrapper. The scheduled pipeline does not run snapshots.
+
+### Reproduce Locally
+
+From the repository root, create the Python environment and install dependencies:
+
+```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
+```
 
-# 2. Build and test the pipeline
+Then install dbt packages, build the models, capture the initial snapshot, and run tests:
+
+```powershell
 cd portfolio_analytics
+dbt deps
 dbt seed
 dbt run
+dbt snapshot
 dbt test
+```
 
-# (or run everything at once, from anywhere in the repo)
+For the daily seed/run/test pipeline, return to the repository root and run:
+
+```powershell
+cd ..
 python scripts/run_pipeline.py
 ```
 
-The DuckDB database (`data/portfolio.duckdb`) is fully regenerable from the source CSVs, so it is not versioned.
+The DuckDB database (`data/portfolio.duckdb`) and dbt build artifacts are regenerable and are not versioned.
 
-### Connecting Power BI
+### Power BI Python Connection
 
-In Power BI Desktop: **Get Data → Python script**, and paste the contents of `scripts/power_bi_source.py`.
+In Power BI Desktop, use **Get Data → Python script** and paste `scripts/power_bi_source.py`. Power BI runs the interpreter selected in **Options → Global → Python scripting**, which may differ from `.venv`. Install the bridge dependencies into that selected Python interpreter; Power BI also imports `matplotlib` when running the script:
 
-Power BI runs Python scripts with the interpreter declared in **Options → Global → Python scripting**, which is *not* the project virtual environment by default. That interpreter needs `duckdb`, `pandas` and `matplotlib` (Power BI imports `matplotlib` even when the script does not use it):
-
-```bash
-pip install duckdb pandas matplotlib
+```powershell
+python -m pip install "duckdb==1.5.4" "pandas==2.2.3" "matplotlib==3.11.2"
 ```
 
-Because Power BI runs the snippet outside of any file, the script cannot resolve the repository root on its own. Point it to the database in either of two ways:
+Power BI executes the pasted code outside a file, so `__file__` is unavailable. Configure `PORTFOLIO_DB_PATH` to the full path of `data/portfolio.duckdb`, or edit the fallback path in the script. To set a persistent Windows user variable, replace the example path and run:
 
-- set a `PORTFOLIO_DB_PATH` environment variable to the full path of `data/portfolio.duckdb` (recommended), or
-- edit the fallback path at the top of the script.
-
-Power BI reads environment variables at startup, so restart it after setting the variable.
-
-The connection is opened in **read-only mode** so that the report can be refreshed while dbt writes to the same database.
-
----
-
-## Project Structure
-
+```powershell
+[Environment]::SetEnvironmentVariable("PORTFOLIO_DB_PATH", "C:\path\to\project-portfolio-analytics-dashboard\data\portfolio.duckdb", "User")
 ```
+
+Restart Power BI after changing the environment variable. The database connection is read-only so the report can read while dbt writes.
+
+### Project Structure
+
+```text
 project-portfolio-analytics-dashboard/
-├── portfolio_analytics/          # dbt project
-│   ├── dbt_project.yml
-│   ├── profiles.yml
-│   ├── seeds/                    # raw source CSVs
-│   └── models/
-│       ├── staging/
-│       ├── intermediate/
-│       └── marts/
-├── scripts/                      # v2 tooling
-│   ├── run_pipeline.py           # orchestration script
-│   ├── run_pipeline.bat          # Task Scheduler wrapper
-│   ├── power_bi_source.py        # DuckDB → Power BI bridge
-│   └── explore_duckdb.py         # ad-hoc DuckDB exploration
-├── legacy_v1/                    # superseded by dbt, kept to document the v1 → v2 move
-│   ├── 1_generate_portfolio_data.py  # source data generation (project origin)
-│   ├── 2_sanity_checks.py
-│   └── 3_enrich_data.py          # pandas enrichment, replaced by the dbt layers
-├── data/                         # source CSVs (DuckDB db is gitignored)
-├── images/                       # dashboard & data-model screenshots
-├── powerbi/
-│   └── project-portfolio-analytics-dashboard.pbix
+├── portfolio_analytics/   # dbt project, packages, models, snapshots, tests, seeds
+├── scripts/               # orchestration, Power BI bridge, DuckDB exploration
+├── legacy_v1/             # original pandas workflow
+├── data/                  # source CSVs; DuckDB database is gitignored
+├── images/                # dashboard, data model, and lineage screenshots
+├── docs/                  # static dbt documentation for GitHub Pages
+├── powerbi/               # Power BI report
 ├── requirements.txt
 └── README.md
 ```
 
----
+### Stack and Possible Evolution
 
-## Skills Demonstrated
+The project uses dbt Core, dbt-duckdb, DuckDB, Python, Power BI, GitHub, and Windows Task Scheduler. Its layered and tested model is a foundation that could be adapted to a production stack; SQL dialects, adapters, and platform-specific behavior may require changes.
 
-- ELT pipeline design with dbt (layered modeling, `ref()`, materializations)
-- Advanced SQL (CTEs-friendly logic, window-free aggregations, joins, `coalesce`, date functions)
-- Dimensional modeling (fact/dimension, star schema, grain)
-- Data quality testing and referential integrity
-- Orchestration (sequencing, error handling, logging, scheduling)
-- End-to-end BI integration with Power BI
-- Git-based versioning and portfolio presentation
+- **Modern data stack:** Snowflake or BigQuery, dbt, and an orchestrator such as Apache Airflow.
+- **Microsoft-native:** Fabric Lakehouse or Warehouse, Fabric Data Pipelines, and Power BI.
 
----
-
-## Evolution Toward Production
-
-This project runs fully locally (DuckDB + a lightweight orchestration script + Windows Task Scheduler), which is ideal for a self-contained, reproducible portfolio. Because the dbt models are **warehouse-agnostic**, the same design scales onto a production stack with minimal changes to the modeling logic. Two realistic paths:
-
-### Path A — Modern data stack
-
-- **Storage:** replace DuckDB with **Snowflake** (or BigQuery) — the cloud equivalent of the local analytical database.
-- **Transformations:** run the same dbt models against the cloud warehouse (only the dbt adapter changes).
-- **Orchestration:** replace `run_pipeline.py` + Task Scheduler with **Apache Airflow** (DAGs, dependencies, retries, monitoring) — the production-grade version of the orchestration logic already implemented here.
-- **BI:** Power BI (or Looker) on top of the curated marts.
-
-### Path B — Microsoft-native (Fabric)
-
-- **Storage:** a Fabric **Lakehouse / Warehouse** instead of DuckDB.
-- **Transformations:** the same dbt models against the Fabric warehouse.
-- **Orchestration:** **Fabric Data Pipelines** for scheduling, monitoring, and alerting.
-- **BI:** Power BI connected natively to the Fabric semantic model.
-
-In both cases, the layered, tested, dimensional design stays identical — only the underlying platform and orchestrator change. This is exactly why the pipeline was built tool-agnostically with dbt.
-
----
-
-## Notes
-
-- The dataset is **simulated** for demonstration purposes.
-- The DuckDB database and dbt build artifacts are regenerable and therefore excluded from version control.
+These are potential next steps, not technologies implemented in this project.
+</details>
